@@ -1,8 +1,8 @@
 // Centralized API Service Layer for LinkPlease Backend
-// Handles Render free-tier cold starts with automatic retry
+// Hardcoded to Render backend URL for 100% reliability on Vercel
 
 export const RENDER_BACKEND_URL = "https://linkplease-ttp8.onrender.com";
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || RENDER_BACKEND_URL;
+export const BASE_URL = RENDER_BACKEND_URL;
 
 async function fetchWithRetry(url, options = {}, retries = 3) {
   for (let i = 0; i < retries; i++) {
@@ -12,7 +12,7 @@ async function fetchWithRetry(url, options = {}, retries = 3) {
     } catch (err) {
       if (i === retries - 1) throw err;
     }
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1500));
   }
   return fetch(url, options);
 }
