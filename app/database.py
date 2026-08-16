@@ -1,7 +1,7 @@
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import event
+from sqlalchemy import event, select, func
 from app.config import settings
 
 # Check if using SQLite or PostgreSQL
@@ -52,3 +52,18 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Auto-seed default rules if database is newly initialized
+    from app.models.rule import Rule
+    async with AsyncSessionLocal() as session:
+        rule_count = await session.scalar(select(func.count(Rule.id)))
+        if rule_count == 0:
+            default_rules = [
+                Rule(id="rule_price", keyword="PRICE", dm_message="Here is our full pricing catalog: https://example.com/pricing. Use code WELCOME10 for 10% off!"),
+                Rule(id="rule_link", keyword="LINK", dm_message="Access the link to our latest course here: https://example.com/course"),
+                Rule(id="rule_discount", keyword="DISCOUNT", dm_message="Exclusive 25% discount code: SAVE25. Valid for the next 24 hours!"),
+                Rule(id="rule_demo", keyword="DEMO", dm_message="Book your live 1-on-1 demo call here: https://example.com/demo"),
+                Rule(id="rule_info", keyword="INFO", dm_message="Here are all product specifications and brochure: https://example.com/info"),
+            ]
+            session.add_all(default_rules)
+            await session.commit()
