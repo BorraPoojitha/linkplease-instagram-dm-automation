@@ -1,6 +1,8 @@
 // Centralized API Service Layer for LinkPlease Backend
+// Configured to point to Render backend URL by default when deployed on Vercel
 
-const BASE_URL = ""; // Relative URL (works both on local dev with proxy and production FastAPI mount)
+const RENDER_BACKEND_URL = "https://linkplease-ttp8.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || RENDER_BACKEND_URL;
 
 export async function fetchStats() {
   const res = await fetch(`${BASE_URL}/stats`);

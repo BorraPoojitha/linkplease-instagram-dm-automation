@@ -1,6 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 from app.database import init_db
@@ -23,6 +24,15 @@ app = FastAPI(
     description="Automated Instagram DM fulfillment for comment keywords.",
     version="1.0.0",
     lifespan=lifespan
+)
+
+# Enable CORS for cross-origin frontend communication (e.g. Vercel frontend calling Render backend)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include Routers
