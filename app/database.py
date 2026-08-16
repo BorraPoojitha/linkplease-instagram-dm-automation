@@ -73,15 +73,15 @@ async def init_db():
             session.add_all(default_rules)
 
         # Seed default events if missing
-        event_count = await session.scalar(select(func.count(Event.id)))
+        event_count = await session.scalar(select(func.count(Event.event_id)))
         if event_count == 0:
             now = datetime.now(timezone.utc)
             sample_events = [
-                Event(id="evt_auto_1", event_type="comment.created", raw_payload='{"text":"Send me the PRICE please"}', received_at=now),
-                Event(id="evt_auto_2", event_type="comment.created", raw_payload='{"text":"I need the LINK"}', received_at=now),
-                Event(id="evt_auto_3", event_type="comment.created", raw_payload='{"text":"Any DISCOUNT code?"}', received_at=now),
-                Event(id="evt_auto_4", event_type="comment.created", raw_payload='{"text":"Book a DEMO"}', received_at=now),
-                Event(id="evt_auto_5", event_type="comment.created", raw_payload='{"text":"DM me INFO"}', received_at=now),
+                Event(event_id="evt_auto_1", event_type="comment.created", comment_id="cmt_1", post_id="post_1", user_id="usr_alice_1", username="alice_tech", comment_text="Send me the PRICE please", created_at=now),
+                Event(event_id="evt_auto_2", event_type="comment.created", comment_id="cmt_2", post_id="post_1", user_id="usr_bob_2", username="bob_builder", comment_text="I need the LINK", created_at=now),
+                Event(event_id="evt_auto_3", event_type="comment.created", comment_id="cmt_3", post_id="post_1", user_id="usr_charlie_3", username="charlie_dev", comment_text="Any DISCOUNT code?", created_at=now),
+                Event(event_id="evt_auto_4", event_type="comment.created", comment_id="cmt_4", post_id="post_1", user_id="usr_david_4", username="david_fitness", comment_text="Book a DEMO", created_at=now),
+                Event(event_id="evt_auto_5", event_type="comment.created", comment_id="cmt_5", post_id="post_1", user_id="usr_emma_5", username="emma_design", comment_text="DM me INFO", created_at=now),
             ]
             session.add_all(sample_events)
 
