@@ -54,13 +54,13 @@ async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Auto-seed default rules, events, and jobs if database is newly initialized
     from app.models.rule import Rule
     from app.models.event import Event
     from app.models.dm_job import DMJob
     from app.models.processed_comment import ProcessedComment
 
     async with AsyncSessionLocal() as session:
+        # Seed default rules if missing
         rule_count = await session.scalar(select(func.count(Rule.id)))
         if rule_count == 0:
             default_rules = [
@@ -71,8 +71,8 @@ async def init_db():
                 Rule(id="rule_info", keyword="INFO", dm_message="Here are all product specifications and brochure: https://example.com/info"),
             ]
             session.add_all(default_rules)
-            await session.commit()
 
+        # Seed default events if missing
         event_count = await session.scalar(select(func.count(Event.id)))
         if event_count == 0:
             now = datetime.now(timezone.utc)
@@ -85,6 +85,10 @@ async def init_db():
             ]
             session.add_all(sample_events)
 
+        # Seed default jobs if missing
+        job_count = await session.scalar(select(func.count(DMJob.id)))
+        if job_count == 0:
+            now = datetime.now(timezone.utc)
             sample_processed = [
                 ProcessedComment(rule_id="rule_price", user_id="usr_alice_1", comment_id="cmt_1", processed_at=now),
                 ProcessedComment(rule_id="rule_link", user_id="usr_bob_2", comment_id="cmt_2", processed_at=now),
@@ -100,4 +104,5 @@ async def init_db():
                 DMJob(id="job_auto_5", rule_id="rule_info", user_id="usr_emma_5", comment_id="cmt_5", message="Here are all product specifications and brochure: https://example.com/info", status="pending", idempotency_key="ik_rule_info_usr_emma_5", attempts=0, created_at=now, updated_at=now),
             ]
             session.add_all(sample_jobs)
-            await session.commit()
+
+        await session.commit()
