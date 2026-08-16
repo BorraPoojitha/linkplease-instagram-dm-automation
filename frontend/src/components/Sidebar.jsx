@@ -1,5 +1,6 @@
 import React from "react";
-import { LayoutDashboard, Sliders, MessageSquare, Activity, BarChart3, FileText, CheckCircle2, XCircle } from "lucide-react";
+import { LayoutDashboard, Sliders, MessageSquare, Activity, BarChart3, FileText } from "lucide-react";
+import { BASE_URL } from "../services/api";
 
 export default function Sidebar({ currentPage, setCurrentPage, healthStatus }) {
   const navItems = [
@@ -11,7 +12,8 @@ export default function Sidebar({ currentPage, setCurrentPage, healthStatus }) {
   ];
 
   const handleDocsClick = () => {
-    window.open("/docs", "_blank");
+    const docsUrl = BASE_URL.endsWith("/") ? `${BASE_URL}docs` : `${BASE_URL}/docs`;
+    window.open(docsUrl, "_blank");
   };
 
   const isOnline = healthStatus?.status === "ok";
