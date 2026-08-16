@@ -1,0 +1,33 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Database Files
+*.db
+*.sqlite
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
